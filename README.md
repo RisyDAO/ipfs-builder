@@ -34,10 +34,17 @@ cd ipfs-builder
 pip install -r requirements.txt
 ```
 
-3. Run the builder:
+3. Make the build script executable (if needed):
+```
+chmod +x build_ipfs_website.sh
+```
+
+4. Run the builder:
 ```
 ./build_ipfs_website.sh
 ```
+
+> **Note**: If you get a "Permission denied" error when trying to run the build script, you'll need to make it executable first using the `chmod +x` command shown above.
 
 ## ⚙️ Configuration
 
