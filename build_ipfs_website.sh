@@ -29,22 +29,31 @@ log() {
 check_requirements() {
     log "Checking requirements..."
     
-    if ! command -v python &> /dev/null; then
+    if ! command -v python &> /dev/null
+    then
         log "Error: Python is not installed"
         exit 1
-    }
+    fi
     
-    if [ ! -f "$PYTHON_SCRIPT" ]; then
+    if [ ! -f "$PYTHON_SCRIPT" ]
+    then
         log "Error: webpage2html.py script not found"
         exit 1
-    }
+    fi
 }
 
 # Clean previous output
 clean_output() {
     log "Cleaning previous output..."
     
-    if [ -f "$OUTPUT_FILE" ]; then
+    if [ ! -d "$OUTPUT_DIR" ]
+    then
+        mkdir -p "$OUTPUT_DIR"
+        log "Created output directory"
+    fi
+    
+    if [ -f "$OUTPUT_FILE" ]
+    then
         rm -f "$OUTPUT_FILE"
         log "Removed existing index.html"
     fi
@@ -56,35 +65,29 @@ generate_website() {
     
     python "$PYTHON_SCRIPT" "$WEBSITE_URL" -s -o "$OUTPUT_FILE"
     
-    if [ ! -f "$OUTPUT_FILE" ]; then
+    if [ ! -f "$OUTPUT_FILE" ]
+    then
         log "Error: Failed to generate website"
         exit 1
-    }
+    fi
 }
 
 # Fix image paths
 fix_image_paths() {
     log "Fixing image paths..."
-    
-    # Using sed with regex to replace all PNG paths under img/ directory
-    # -i: edit files in place
-    # The backup extension is empty '' so no backup is created
     sed -i'' 's|img/\([^/]*\.png\)|\1|g' "$OUTPUT_FILE"
-    
     log "Image paths fixed"
 }
 
 # Main execution
 main() {
     log "Starting website build process..."
-    
     check_requirements
     clean_output
     generate_website
     fix_image_paths
-    
     log "Website build completed successfully"
 }
 
 # Execute main function
-main 
+main
